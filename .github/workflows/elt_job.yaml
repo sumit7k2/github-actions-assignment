@@ -1,0 +1,31 @@
+name: ELT pipeline
+
+on:
+  schedule:
+  - cron: '0 17 * * *'
+  workflow_dispatch:
+
+jobs:
+  elt-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setting up python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Libraries installation
+      run: pip3 install pandas requests datetime
+
+    - name: Run the script
+      run: python3 app.py
+
+    - name: publish files to github
+      uses: mikeal/publish-to-github-action@master
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        BRANCH_NAME: 'main'
